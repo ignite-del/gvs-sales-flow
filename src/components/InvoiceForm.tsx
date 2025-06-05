@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -10,8 +11,9 @@ import { ArrowLeft, Plus, Trash2, Download } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { generatePDF } from "@/utils/pdfGenerator";
 
-interface QuoteFormProps {
+interface InvoiceFormProps {
   onBack: () => void;
+  quoteData?: any; // For converting from quote
 }
 
 interface LineItem {
@@ -23,20 +25,22 @@ interface LineItem {
   total: number;
 }
 
-const QuoteForm = ({ onBack }: QuoteFormProps) => {
+const InvoiceForm = ({ onBack, quoteData }: InvoiceFormProps) => {
   const { toast } = useToast();
-  const [customerName, setCustomerName] = useState("");
-  const [contactPerson, setContactPerson] = useState("");
-  const [email, setEmail] = useState("");
-  const [phone, setPhone] = useState("");
-  const [address, setAddress] = useState("");
-  const [validUntil, setValidUntil] = useState("");
-  const [paymentTerms, setPaymentTerms] = useState("");
+  const [customerName, setCustomerName] = useState(quoteData?.customer || "");
+  const [contactPerson, setContactPerson] = useState(quoteData?.contact || "");
+  const [email, setEmail] = useState(quoteData?.email || "");
+  const [phone, setPhone] = useState(quoteData?.phone || "");
+  const [address, setAddress] = useState(quoteData?.address || "");
+  const [dueDate, setDueDate] = useState("");
+  const [paymentTerms, setPaymentTerms] = useState("net30");
   const [notes, setNotes] = useState("");
   
-  const [lineItems, setLineItems] = useState<LineItem[]>([
-    { id: "1", productName: "", quantity: 1, unitPrice: 0, discount: 0, total: 0 }
-  ]);
+  const [lineItems, setLineItems] = useState<LineItem[]>(
+    quoteData?.lineItems || [
+      { id: "1", productName: "", quantity: 1, unitPrice: 0, discount: 0, total: 0 }
+    ]
+  );
 
   const addLineItem = () => {
     const newItem: LineItem = {
@@ -60,7 +64,6 @@ const QuoteForm = ({ onBack }: QuoteFormProps) => {
     setLineItems(lineItems.map(item => {
       if (item.id === id) {
         const updated = { ...item, [field]: value };
-        // Calculate total when quantity, unitPrice, or discount changes
         if (field === 'quantity' || field === 'unitPrice' || field === 'discount') {
           const subtotal = Number(updated.quantity) * Number(updated.unitPrice);
           const discountAmount = subtotal * (Number(updated.discount) / 100);
@@ -76,34 +79,34 @@ const QuoteForm = ({ onBack }: QuoteFormProps) => {
     return lineItems.reduce((sum, item) => sum + item.total, 0);
   };
 
-  const handleSaveQuote = () => {
+  const handleSaveInvoice = () => {
     toast({
-      title: "Quote Saved",
-      description: "Your quote has been saved successfully.",
+      title: "Invoice Saved",
+      description: "Your invoice has been saved successfully.",
     });
   };
 
   const handleGeneratePDF = () => {
-    const quoteData = {
-      id: `Q-2024-${String(Date.now()).slice(-3)}`,
-      type: 'quote' as const,
+    const invoiceData = {
+      id: `INV-2024-${String(Date.now()).slice(-3)}`,
+      type: 'invoice' as const,
       customer: customerName,
       contact: contactPerson,
       email,
       phone,
       address,
       date: new Date().toLocaleDateString(),
-      validUntil,
+      dueDate,
       lineItems,
       notes,
       paymentTerms
     };
 
-    generatePDF(quoteData);
+    generatePDF(invoiceData);
     
     toast({
-      title: "Quote PDF Generated",
-      description: "Your quote PDF has been generated and downloaded.",
+      title: "Invoice PDF Generated",
+      description: "Your invoice PDF has been generated and downloaded.",
     });
   };
 
@@ -115,8 +118,10 @@ const QuoteForm = ({ onBack }: QuoteFormProps) => {
           <ArrowLeft className="h-4 w-4" />
         </Button>
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">Create New Quote</h1>
-          <p className="text-gray-600">Generate a professional quotation for your customer</p>
+          <h1 className="text-3xl font-bold text-gray-900">
+            {quoteData ? "Convert Quote to Invoice" : "Create New Invoice"}
+          </h1>
+          <p className="text-gray-600">Generate a professional invoice for your customer</p>
         </div>
       </div>
 
@@ -178,27 +183,27 @@ const QuoteForm = ({ onBack }: QuoteFormProps) => {
           </CardContent>
         </Card>
 
-        {/* Quote Details */}
+        {/* Invoice Details */}
         <Card>
           <CardHeader>
-            <CardTitle>Quote Details</CardTitle>
+            <CardTitle>Invoice Details</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="quoteNumber">Quote Number</Label>
-              <Input id="quoteNumber" value={`Q-2024-${String(Date.now()).slice(-3)}`} readOnly className="bg-gray-50" />
+              <Label htmlFor="invoiceNumber">Invoice Number</Label>
+              <Input id="invoiceNumber" value={`INV-2024-${String(Date.now()).slice(-3)}`} readOnly className="bg-gray-50" />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="quoteDate">Quote Date</Label>
-              <Input id="quoteDate" type="date" defaultValue={new Date().toISOString().split('T')[0]} />
+              <Label htmlFor="invoiceDate">Invoice Date</Label>
+              <Input id="invoiceDate" type="date" defaultValue={new Date().toISOString().split('T')[0]} />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="validUntil">Valid Until</Label>
+              <Label htmlFor="dueDate">Due Date</Label>
               <Input 
-                id="validUntil" 
+                id="dueDate" 
                 type="date" 
-                value={validUntil}
-                onChange={(e) => setValidUntil(e.target.value)}
+                value={dueDate}
+                onChange={(e) => setDueDate(e.target.value)}
               />
             </div>
             <div className="space-y-2">
@@ -219,7 +224,7 @@ const QuoteForm = ({ onBack }: QuoteFormProps) => {
         </Card>
       </div>
 
-      {/* Line Items */}
+      {/* Line Items - same as QuoteForm */}
       <Card>
         <CardHeader>
           <div className="flex items-center justify-between">
@@ -232,7 +237,7 @@ const QuoteForm = ({ onBack }: QuoteFormProps) => {
         </CardHeader>
         <CardContent>
           <div className="space-y-4">
-            {lineItems.map((item, index) => (
+            {lineItems.map((item) => (
               <div key={item.id} className="grid grid-cols-12 gap-4 items-end p-4 bg-gray-50 rounded-lg">
                 <div className="col-span-4">
                   <Label htmlFor={`product-${item.id}`}>Product/Service</Label>
@@ -319,7 +324,7 @@ const QuoteForm = ({ onBack }: QuoteFormProps) => {
           <Textarea
             value={notes}
             onChange={(e) => setNotes(e.target.value)}
-            placeholder="Add any special terms, conditions, or notes for this quote..."
+            placeholder="Add any special terms, conditions, or notes for this invoice..."
             rows={4}
           />
         </CardContent>
@@ -330,7 +335,7 @@ const QuoteForm = ({ onBack }: QuoteFormProps) => {
         <Button variant="outline" onClick={onBack}>
           Cancel
         </Button>
-        <Button variant="outline" onClick={handleSaveQuote}>
+        <Button variant="outline" onClick={handleSaveInvoice}>
           Save Draft
         </Button>
         <Button onClick={handleGeneratePDF} className="bg-blue-600 hover:bg-blue-700">
@@ -342,4 +347,4 @@ const QuoteForm = ({ onBack }: QuoteFormProps) => {
   );
 };
 
-export default QuoteForm;
+export default InvoiceForm;

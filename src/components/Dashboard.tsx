@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -16,6 +15,7 @@ import {
   Plus,
   Calendar
 } from "lucide-react";
+import InvoiceForm from "@/components/InvoiceForm";
 
 interface DashboardProps {
   onLogout: () => void;
@@ -65,6 +65,8 @@ const Dashboard = ({ onLogout }: DashboardProps) => {
     switch (activeView) {
       case "create-quote":
         return <QuoteForm onBack={() => setActiveView("dashboard")} />;
+      case "create-invoice":
+        return <InvoiceForm onBack={() => setActiveView("dashboard")} />;
       case "customers":
         return <CustomerList />;
       case "documents":
@@ -78,13 +80,22 @@ const Dashboard = ({ onLogout }: DashboardProps) => {
                 <h1 className="text-3xl font-bold text-gray-900">Sales Dashboard</h1>
                 <p className="text-gray-600 mt-1">Welcome back! Here's what's happening with your sales.</p>
               </div>
-              <Button 
-                onClick={() => setActiveView("create-quote")}
-                className="bg-blue-600 hover:bg-blue-700"
-              >
-                <Plus className="h-4 w-4 mr-2" />
-                New Quote
-              </Button>
+              <div className="flex space-x-3">
+                <Button 
+                  onClick={() => setActiveView("create-quote")}
+                  className="bg-blue-600 hover:bg-blue-700"
+                >
+                  <Plus className="h-4 w-4 mr-2" />
+                  New Quote
+                </Button>
+                <Button 
+                  onClick={() => setActiveView("create-invoice")}
+                  variant="outline"
+                >
+                  <FileText className="h-4 w-4 mr-2" />
+                  New Invoice
+                </Button>
+              </div>
             </div>
 
             {/* Stats Grid */}
@@ -163,6 +174,14 @@ const Dashboard = ({ onLogout }: DashboardProps) => {
                     >
                       <Plus className="h-4 w-4 mr-3" />
                       Create New Quote
+                    </Button>
+                    <Button 
+                      variant="outline" 
+                      className="w-full justify-start h-12"
+                      onClick={() => setActiveView("create-invoice")}
+                    >
+                      <FileText className="h-4 w-4 mr-3" />
+                      Create New Invoice
                     </Button>
                     <Button 
                       variant="outline" 

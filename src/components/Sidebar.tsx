@@ -21,6 +21,7 @@ const Sidebar = ({ activeView, setActiveView, onLogout }: SidebarProps) => {
   const navItems = [
     { id: "dashboard", label: "Dashboard", icon: LayoutDashboard },
     { id: "create-quote", label: "New Quote", icon: Plus },
+    { id: "create-invoice", label: "New Invoice", icon: FileText },
     { id: "documents", label: "Documents", icon: FileText },
     { id: "customers", label: "Customers", icon: Users },
     { id: "settings", label: "Settings", icon: Settings },
