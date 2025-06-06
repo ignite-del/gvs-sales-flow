@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -6,7 +5,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import Dashboard from "@/components/Dashboard";
-import { Building2, Lock, User } from "lucide-react";
+import Logo from "@/components/ui/logo";
+import { Lock, User } from "lucide-react";
 
 const Index = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -43,12 +43,8 @@ const Index = () => {
         <div className="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-blue-600 to-blue-800 p-12 text-white relative overflow-hidden">
           <div className="absolute inset-0 bg-black/10"></div>
           <div className="relative z-10 flex flex-col justify-center max-w-md">
-            <div className="flex items-center space-x-3 mb-8">
-              <Building2 className="h-12 w-12" />
-              <div>
-                <h1 className="text-3xl font-bold">GVS</h1>
-                <p className="text-blue-100">Sales Platform</p>
-              </div>
+            <div className="mb-8">
+              <Logo size="xl" variant="full" className="text-white [&>div>h1]:text-white [&>div>p]:text-blue-100 [&>div]:bg-white/20" />
             </div>
             
             <h2 className="text-4xl font-bold mb-6 leading-tight">
@@ -85,12 +81,8 @@ const Index = () => {
         <div className="flex-1 flex items-center justify-center p-8">
           <div className="w-full max-w-md">
             <div className="text-center mb-8 lg:hidden">
-              <div className="flex items-center justify-center space-x-3 mb-4">
-                <Building2 className="h-10 w-10 text-blue-600" />
-                <div>
-                  <h1 className="text-2xl font-bold text-gray-900">GVS</h1>
-                  <p className="text-gray-600">Sales Platform</p>
-                </div>
+              <div className="flex items-center justify-center mb-4">
+                <Logo size="lg" variant="full" />
               </div>
             </div>
 

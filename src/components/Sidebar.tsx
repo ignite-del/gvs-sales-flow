@@ -1,8 +1,8 @@
 
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
+import Logo from "@/components/ui/logo";
 import { 
-  Building2, 
   LayoutDashboard, 
   FileText, 
   Users, 
@@ -31,15 +31,7 @@ const Sidebar = ({ activeView, setActiveView, onLogout }: SidebarProps) => {
     <div className="fixed left-0 top-0 h-full w-64 bg-white border-r border-gray-200 shadow-sm">
       {/* Logo Section */}
       <div className="p-6 border-b border-gray-200">
-        <div className="flex items-center space-x-3">
-          <div className="p-2 bg-blue-600 rounded-lg">
-            <Building2 className="h-6 w-6 text-white" />
-          </div>
-          <div>
-            <h1 className="text-xl font-bold text-gray-900">GVS</h1>
-            <p className="text-sm text-gray-600">Sales Platform</p>
-          </div>
-        </div>
+        <Logo size="md" variant="full" />
       </div>
 
       {/* Navigation */}
