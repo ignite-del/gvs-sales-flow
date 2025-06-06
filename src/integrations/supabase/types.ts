@@ -9,7 +9,115 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
-      [_ in never]: never
+      quote_items: {
+        Row: {
+          amount: number
+          created_at: string | null
+          description: string
+          id: string
+          price: number
+          quantity: number
+          quote_id: string
+        }
+        Insert: {
+          amount: number
+          created_at?: string | null
+          description: string
+          id?: string
+          price: number
+          quantity?: number
+          quote_id: string
+        }
+        Update: {
+          amount?: number
+          created_at?: string | null
+          description?: string
+          id?: string
+          price?: number
+          quantity?: number
+          quote_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "quote_items_quote_id_fkey"
+            columns: ["quote_id"]
+            isOneToOne: false
+            referencedRelation: "quotes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      quotes: {
+        Row: {
+          created_at: string | null
+          currency: string | null
+          gst_number: string | null
+          id: string
+          quote_amount: number
+          quote_title: string
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          currency?: string | null
+          gst_number?: string | null
+          id?: string
+          quote_amount?: number
+          quote_title: string
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          currency?: string | null
+          gst_number?: string | null
+          id?: string
+          quote_amount?: number
+          quote_title?: string
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "quotes_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      users: {
+        Row: {
+          company: string | null
+          created_at: string | null
+          email: string
+          gst_number: string | null
+          id: string
+          logo_url: string | null
+          name: string
+        }
+        Insert: {
+          company?: string | null
+          created_at?: string | null
+          email: string
+          gst_number?: string | null
+          id: string
+          logo_url?: string | null
+          name: string
+        }
+        Update: {
+          company?: string | null
+          created_at?: string | null
+          email?: string
+          gst_number?: string | null
+          id?: string
+          logo_url?: string | null
+          name?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
